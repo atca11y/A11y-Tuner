@@ -1,0 +1,51 @@
+```
+package com.example.allytune
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.material
+import androidx.compose.material.Button
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.tooling.preview.Preview
+
+@Composable
+fun MainActivity() {
+    val note = remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(text = "Ally Tune")
+        Button(onClick = {
+            // Disable the button for 5 seconds.
+            button.isEnabled = false
+
+            // Start the microphone and capture audio for 5 seconds.
+            val audioRecorder = AudioRecorder()
+            audioRecorder.start()
+            Thread.sleep(5000)
+            audioRecorder.stop()
+
+            // Analyze the audio to determine what note was detected.
+            val detectedNote = NoteDetector.detectNote(audioRecorder.recordedAudio)
+
+            // Update the text view with the detected note.
+            note.value = "Note: $detectedNote"
+
+            // Enable the button again.
+            button.isEnabled = true
+        }) {
+            Text(text = "Check Note")
+        }
+        Text(text = note.value)
+    }
+}
+
+@Preview
+@Composable
+fun DefaultPreview() {
+    MainActivity()
+}
+```
